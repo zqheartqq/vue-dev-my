@@ -23,6 +23,7 @@ let uid = 0
  * and fires callback when the expression value changes.
  * This is used for both the $watch() api and directives.
  */
+// new Watcher(vm, updateComponent, noop, options, true)
 export default class Watcher {
   vm: Component;
   expression: string;

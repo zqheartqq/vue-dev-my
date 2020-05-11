@@ -25,6 +25,7 @@ const weexFactoryPlugin = {
   }
 }
 
+const aliases = require('./alias')
 const resolve = p => { // p: web/entry-runtime-with-compiler.js
   const base = p.split('/')[0] // base: web
   if (aliases[base]) { // aliases[base]: xxx/vue-dev/src/platforms/web

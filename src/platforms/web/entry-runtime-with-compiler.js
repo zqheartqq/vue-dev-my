@@ -9,10 +9,18 @@ import { query } from './util/index'
 import { compileToFunctions } from './compiler/index'
 import { shouldDecodeNewlines, shouldDecodeNewlinesForHref } from './util/compat'
 
+// export function cached<F: Function> (fn: F): F {
+//   const cache = Object.create(null)
+//   return (function cachedFn (str: string) {
+//     const hit = cache[str]
+//     return hit || (cache[str] = fn(str))
+//   }: any)
+// }
 const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
+
 // 引入./runtime/index.js 里的公共$mount方法, 缓存起来
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
@@ -31,12 +39,12 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
-  if (!options.render) {
+  if (!options.render) { // 所以vue文档里面有说：Vue 选项中的 render 函数若存在，则 Vue 构造函数不会从 template 选项或通过 el 选项指定的挂载元素中提取出的 HTML 模板编译渲染函数。
     let template = options.template
     if (template) {
-      if (typeof template === 'string') {
-        if (template.charAt(0) === '#') {
-          template = idToTemplate(template)
+      if (typeof template === 'string') { // 传了字符串的话 template
+        if (template.charAt(0) === '#') { // 传的是 id
+          template = idToTemplate(template) // 这里面用了缓存
           /* istanbul ignore if */
           if (process.env.NODE_ENV !== 'production' && !template) {
             warn(
@@ -45,7 +53,7 @@ Vue.prototype.$mount = function (
             )
           }
         }
-      } else if (template.nodeType) {
+      } else if (template.nodeType) { // 传的是个dom元素，比如<template><div>内容</div></template>
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
