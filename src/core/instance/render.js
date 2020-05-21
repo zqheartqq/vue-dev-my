@@ -89,6 +89,13 @@ export function renderMixin (Vue: Class<Component>) {
       // when parent component is patched.
       currentRenderingInstance = vm
       vnode = render.call(vm._renderProxy, vm.$createElement)
+      // render: function (createElement) {
+      //   return createElement('div', {
+      //      attrs: {
+      //         id: 'app'
+      //       },
+      //   }, this.message)
+      // }
     } catch (e) {
       handleError(e, vm, `render`)
       // return error render result,
