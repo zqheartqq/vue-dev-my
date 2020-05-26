@@ -34,6 +34,9 @@ export function createElement (
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
   // 分析参数，如果发现是第二种用法，那么处理下参数
+  // 兼容不传data的情况
+  // { tag: 'div', data: { attrs: {}, ...}, children: [] }
+  // { tag: 'div', '文本' }
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
     children = data
@@ -52,6 +55,7 @@ export function _createElement (
   children?: any,
   normalizationType?: number
 ): VNode | Array<VNode> {
+  // data在vnode渲染过程中可能会被改变，这样会触发监控，导致不符合预期的操作
   if (isDef(data) && isDef((data: any).__ob__)) {
     process.env.NODE_ENV !== 'production' && warn(
       `Avoid using observed data object as vnode data: ${JSON.stringify(data)}\n` +
@@ -96,8 +100,11 @@ export function _createElement (
   let vnode, ns
   if (typeof tag === 'string') {
     let Ctor
+    // 获取标签名的命名空间
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
+    // 判断是否为保留标签
     if (config.isReservedTag(tag)) {
+      // 如果是保留标签,就创建一个这样的vnode
       // platform built-in elements
       if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn)) {
         warn(
@@ -109,10 +116,12 @@ export function _createElement (
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
+      // 如果不是保留标签，那么我们将尝试从vm的components上查找是否有这个标签的定义
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
+      // 如果找到了这个标签的定义，就以此创建虚拟组件节点
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
+      // 兜底方案，正常创建一个vnode
       // unknown or unlisted namespaced elements
       // check at runtime because it may get assigned a namespace when its
       // parent normalizes children
@@ -122,16 +131,19 @@ export function _createElement (
       )
     }
   } else {
+    // 当tag不是字符串的时候，tag是组件的构造类 直接创建
     // direct component options / constructor
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {
     return vnode
   } else if (isDef(vnode)) {
+    // 如果有namespace，就应用下namespace，然后返回vnode
     if (isDef(ns)) applyNS(vnode, ns)
     if (isDef(data)) registerDeepBindings(data)
     return vnode
   } else {
+    // 否则，返回一个空节点
     return createEmptyVNode()
   }
 }
