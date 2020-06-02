@@ -92,6 +92,7 @@ export function _createElement (
     data.scopedSlots = { default: children[0] }
     children.length = 0
   }
+  // TODO: 这个地方，需要比较下手写模版转的render函数和直接写的render函数，区别是什么，然后使用的方法不同
   if (normalizationType === ALWAYS_NORMALIZE) {
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {

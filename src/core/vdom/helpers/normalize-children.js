@@ -30,8 +30,8 @@ export function simpleNormalizeChildren (children: any) {
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
 export function normalizeChildren (children: any): ?Array<VNode> {
-  return isPrimitive(children)
-    ? [createTextVNode(children)]
+  return isPrimitive(children) // 如果是原始类型 h('div', '哈哈哈')
+    ? [createTextVNode(children)] // 转为数组的文本节点
     : Array.isArray(children)
       ? normalizeArrayChildren(children)
       : undefined

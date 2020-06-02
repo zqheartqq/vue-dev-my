@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-    <script src="./dist/vue.js"></script>
+    <script src="./dist/vue.runtime.js"></script>
   </head>
   <body>
     <div id="app">
@@ -30,18 +30,30 @@
       new Vue({
         el: "#app",
         template: a,
-        // render(c) {
-        //   return c("div", { attrs: { id: "app" } }, [
-        //     c("div", "1.1"),
-        //     c("div", {}, [
-        //       c("div", "2.1"), 
-        //       c("div", {}, 
-        //       [
-        //         c("div", "3.1")
-        //       ])
-        //     ]),
-        //   ]);
+        // render(h) {
+        //   return h("div", { attrs: { id: "haha" } },[
+        //     [
+        //       h("div", "111"),
+        //       h("div", "222")
+        //     ],
+        //     [
+        //       h("div", "333")
+        //     ]
+        //   ]
+        //   );
         // },
+        render(c) {
+          return c("div", { attrs: { id: "app" } }, [
+            c("div", "1.1"),
+            c("div", {}, [
+              c("div", "2.1"),
+              c("div", {},
+              [
+                c("div", "3.1")
+              ])
+            ]),
+          ]);
+        },
         data() {
           return {
             message: "哈哈哈",
