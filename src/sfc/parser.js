@@ -8,6 +8,10 @@ const splitRE = /\r?\n/g
 const replaceRE = /./g
 const isSpecialTag = makeMap('script,style,template', true)
 
+
+
+
+
 /**
  * Parse a single-file component (*.vue) file into an SFC Descriptor Object.
  */
